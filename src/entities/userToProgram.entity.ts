@@ -1,21 +1,22 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
-
-enum requestStatus {
-  Pending,
-  Approved,
-  Rejected
-}
+import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Program } from '../entities/program.entity'
+import { UserRoles } from '../entities/roles.entity'
+import { User } from '../entities/user.entity'
 
 @Entity('users_programs')
-export class UserToProgram {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class UsersPrograms {
+  @PrimaryGeneratedColumn({ name: 'id' })
+  id: number
 
-  @Column({name: 'is_accepted'})
-  isAccepted: requestStatus
+  @ManyToOne(() => Program, (programs) => programs.usersPrograms)
+  @JoinColumn([{ name: 'program_id', referencedColumnName: 'id' }])
+  program: Program
+
+  @ManyToOne(() => UserRoles, (userRoles) => userRoles.usersPrograms)
+  @JoinColumn([{ name: 'role_id', referencedColumnName: 'id' }])
+  role: UserRoles
+
+  @ManyToOne(() => User, (users) => users.workouts)
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: User
 }
-
-//TODO
-//userId
-//programId
-//roleId

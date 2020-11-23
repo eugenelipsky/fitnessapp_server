@@ -1,16 +1,33 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
+
+import { User } from '../entities/user.entity'
+import { UsersPrograms } from '../entities/userToProgram.entity'
 
 @Entity('programs')
 export class Program {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn({ name: 'id' })
+  id: number
 
-  @Column()
-  title: string;
+  @Column({ name: 'title', length: 100 })
+  title: string
 
-  @Column({name: 'short_description'})
-  shortDescription: string;
+  @Column({ name: 'short_description', length: 120 })
+  shortDescription: string
 
-  @Column()
-  description: string;
+  @Column({ name: 'description' })
+  description: string
+
+  @ManyToOne(() => User, (users) => users.programsOwner)
+  @JoinColumn([{ name: 'owner_id', referencedColumnName: 'id' }])
+  owner: User
+
+  @OneToMany(() => UsersPrograms, (usersPrograms) => usersPrograms.program)
+  usersPrograms: UsersPrograms[]
 }
